@@ -40,7 +40,30 @@ class CosineSimilarity(object):
             cut_code[word_dict[word]] += 1
         return cut_code
 
-    
+    def main(self):
+        # 提取关键词
+        keywords1 = self.extract_keyword(self.s1)
+        keywords2 = self.extract_keyword(self.s2)
+        # 词的并集
+        union = set(keywords1).union(set(keywords2))
+        # 编码
+        word_dict = {}
+        i = 0
+        for word in union:
+            word_dict[word] = i
+            i += 1
+        # oneHot编码
+        s1_cut_code = self.one_hot(word_dict, keywords1)
+        s2_cut_code = self.one_hot(word_dict, keywords2)
+        # 余弦相似度计算
+        sample = [s1_cut_code, s2_cut_code]
+        # 除零处理
+        try:
+            sim = cosine_similarity(sample)
+            return sim[1][0]
+        except Exception as e:
+            print(e)
+            return 0.0
 # 测试
 if __name__ == '__main__':
     path1=sys.argv[1]
